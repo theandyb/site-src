@@ -1,5 +1,7 @@
-baseurl = "http://www.example.com"
+baseurl = "http://theandyb.github.io/"
 title = "Andy Beck"
+
+ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 
 theme = "hugo-coder"
 
