@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Andy Beck</title>
-    <link>/</link>
-    <description>Recent content on Andy Beck</description>
+    <title>Random on Andy Beck</title>
+    <link>/categories/random/</link>
+    <description>Recent content in Random on Andy Beck</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Fri, 21 Jun 2019 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/categories/random/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -19,33 +19,6 @@
       <guid>/posts/hugo-template-primer/</guid>
       <description>Welcome to my blog! Not sure exactly what&amp;rsquo;ll end up comprising the content of this section of my personal webpage, but I imagine that posts will cover topics that I am interested in. This could very well include statistics, population and medical genetics, running, and perhaps even some hot takes on pop culture (unlikely, but never say never!)
 So buckle up, and get ready to enjoy the ride! (Don&amp;rsquo;t hold your breath waiting on new posts though)</description>
-    </item>
-    
-    <item>
-      <title>About</title>
-      <link>/about/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/about/</guid>
-      <description>Andy is a PhD candidate in the Department of Biostatistics at the University of Michigan School of Public Health.</description>
-    </item>
-    
-    <item>
-      <title>Contact</title>
-      <link>/contact/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/contact/</guid>
-      <description>Follow me, @johndoe.</description>
-    </item>
-    
-    <item>
-      <title>Projects</title>
-      <link>/projects/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/projects/</guid>
-      <description>Nothing to see here&amp;hellip; Move along!</description>
     </item>
     
   </channel>
