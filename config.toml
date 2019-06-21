@@ -15,7 +15,7 @@ pygmentsstyle = "b2"
 pygmentscodefences = true
 pygmentscodefencesguesssyntax = true
 
-disqusShortname = "beckandy"
+disqusShortname = "andysbiostatblog"
 
 [params]
     author = "Andy Beck"
