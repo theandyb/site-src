@@ -22,7 +22,7 @@ disqusShortname = "andysbiostatblog"
     description = "Andy Beck's personal website"
     keywords = "blog,developer,personal"
     info = "Biostatistics PhD Candidate, University of Michigan"
-    avatarurl = "images/avatar.jpg"
+    avatarurl = "images/dork.jpg"
     footercontent = "That's all!"
 
     dateformat = "January 2, 2006"
