@@ -3,4 +3,4 @@ slug: projects
 title: Projects
 ---
 
-Nothing to see here... Move along!
+Page under construction. In the meantime, check out what I'm up to on [github](https://github.com/theandyb)!
