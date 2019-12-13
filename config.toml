@@ -24,6 +24,7 @@ disqusShortname = "andysbiostatblog"
     info = "Biostatistics PhD Candidate, University of Michigan"
     avatarurl = "images/dork.jpg"
     footercontent = "That's all!"
+    math = true
 
     dateformat = "January 2, 2006"
 

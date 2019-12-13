@@ -4,7 +4,17 @@
   
   <url>
     <loc>/</loc>
-    <lastmod>2019-06-21T00:00:00+00:00</lastmod>
+    <lastmod>2019-12-13T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/posts/</loc>
+    <lastmod>2019-12-13T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/posts/semiparametric-two-stage-1/</loc>
+    <lastmod>2019-12-13T00:00:00+00:00</lastmod>
   </url>
   
   <url>
@@ -24,11 +34,6 @@
   
   <url>
     <loc>/series/no-common-thread/</loc>
-    <lastmod>2019-06-21T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/posts/</loc>
     <lastmod>2019-06-21T00:00:00+00:00</lastmod>
   </url>
   
