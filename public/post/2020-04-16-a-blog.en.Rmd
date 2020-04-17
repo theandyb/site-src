@@ -1,0 +1,18 @@
+---
+title: A blog?
+author: Andy Beck
+date: '2020-04-16'
+slug: a-blog
+categories: []
+tags: []
+description: ''
+noLicense: no
+---
+
+Thinking of content to put here... NOW
+
+But in the mean time, does LaTeX work?
+
+$$
+\sum_{i=1}^n (X_i - \mu)^2
+$$

@@ -1,0 +1,92 @@
+baseURL = "https://example.com"
+title = "Fuji Demo"
+theme = "fuji"
+hasCJKLanguage = true
+enableEmoji = true
+disableKinds = ["RSS", "taxonomyTerm"]
+
+## Change this two to switch between different language
+## Now support: en, zh-hans, zh-hant, ja
+defaultContentLanguage = "en"
+languageCode = "en"
+
+summaryLength = 100 # Custom cummary length, add <!--more--> in post file to custom split point
+paginate = 10
+
+[permalinks]
+  post = "/:filename/" # Custom post links, e.g. "/:year/:month/:title/"
+
+[params]
+  author = "DSRKafuU" # You can also set author in post front matter individually
+  subTitle = "This is a Sub Title"
+
+  # Open Graph & Twitter Card variables
+  # You can also set description and images in post front matter individually
+  description = "A minimal hugo theme powered by Primer CSS."
+  images = ["img/og.png"] # This will use the image called og.png in static/img folder
+
+  # Posts shown in homepage
+  mainSections = ["post"]
+
+  # Google Analytics
+  googleAnalyticsUA = "UA-000000000-0"
+
+  # Bangumi image chart id
+  # bgmImageChart = "000000"
+
+  # Show scroll to top button
+  scrollTop = true
+
+  # License
+  license = "Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License (CC BY-NC-SA 4.0)"
+  licenseLink = "http://creativecommons.org/licenses/by-nc-sa/4.0/"
+
+  # Comments
+  # utterances, see: https://utteranc.es/
+  utterancesComment = false
+  cdnUtterancesJS = "https://utteranc.es/client.js"
+  utterancesRepo = "[ENTER REPO HERE]"
+  utterancesIssueTerm = "pathname"
+  utterancesTheme = "github-light"
+
+  # Disqus, see: https://disqus.com/admin/install/platforms/universalcode/
+  disqusComment = false
+  disqusShortname = "[ENTER YOUR DISQUS SHORTNAME HERE]"
+
+  # Custom lazyload thumbnail
+  cdnLazyloadSRC = "https://cdn.jsdelivr.net/gh/amzrk2/poal-jsdelivr/lazyload/dsr_loading.svg"
+  # Custom css & js CDN
+  # cdnIntersectionObserverJS = "https://cdn.jsdelivr.net/npm/intersection-observer@0.7.0/intersection-observer.min.js" # Optional
+  cdnVanillaLazyloadJS = "https://cdn.jsdelivr.net/npm/vanilla-lazyload@15.1.1/dist/lazyload.min.js"
+  cdnJQueryJS = "https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js"
+  cdnProgessJS = "https://cdn.jsdelivr.net/npm/progressbar.js@1.1.0/dist/progressbar.min.js"
+
+[markup]
+  [markup.highlight]
+    style = "monokailight"
+
+[taxonomies]
+  tag = "tags"
+
+[menu]
+  [[menu.nav]]
+    name = "Home"
+    url = "/"
+    weight = 1
+  [[menu.nav]]
+    name = "Archives"
+    url = "/archives/"
+    weight = 2
+  [[menu.nav]]
+    name = "About"
+    url = "/about/"
+    weight = 3
+
+  [[menu.link]]
+    name = "GitHub"
+    url = "https://github.com/amzrk2"
+    weight = 1
+  [[menu.link]]
+    name = "bilibili"
+    url = "https://space.bilibili.com/19767474"
+    weight = 2
