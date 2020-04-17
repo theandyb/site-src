@@ -3,6 +3,7 @@ title = "Borderline Significant"
 theme = "hugo-theme-fuji"
 enableEmoji = true
 disableKinds = ["RSS", "taxonomyTerm"]
+disqusShortname = "andysbiostatblog"
 
 ## Change this two to switch between different language
 ## Now support: en, zh-hans, zh-hant, ja
@@ -50,7 +51,6 @@ paginate = 10
 
   # Disqus, see: https://disqus.com/admin/install/platforms/universalcode/
   disqusComment = true
-  disqusShortname = "andysbiostatblog"
 
   # Custom lazyload thumbnail
   cdnLazyloadSRC = "https://cdn.jsdelivr.net/gh/amzrk2/poal-jsdelivr/lazyload/dsr_loading.svg"
