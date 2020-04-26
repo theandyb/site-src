@@ -18,13 +18,13 @@ library(tidyverse)
 library(jsonlite)
 ```
 
-There's been a lot of interest recently in tracking the number of COVID-19 cases in the US, whether at the national, state, or more local level. Groups including the [New York Times](https://github.com/nytimes/covid-19-data) and [1point3acres](https://coronavirus.1point3acres.com/en) have put together publicly available data sets, which appear to be largely based on numbers reported by state health departments. Another effort to collect this data through crowdsourcing the data acquistion is organized by [Broadstreet](https://covid19dataproject.org/), where volunteers collect daily numbers reported by state health departments. I've been a volunteer with the project as well, and generally I've been working on data quality issues. These can issues such as a reported cumulative case count dropping in a county, or instances where county health officials report case and death counts later than the state.
+There's been a lot of interest recently in tracking the number of COVID-19 cases in the US, whether at the national, state, or more local level. Groups including the [New York Times](https://github.com/nytimes/covid-19-data) and [1point3acres](https://coronavirus.1point3acres.com/en) have put together publicly available data sets, which appear to be largely based on numbers reported by state health departments. Another effort to collect this data through crowd-sourcing the data acquisition is organized by [Broadstreet](https://covid19dataproject.org/), where volunteers collect daily numbers reported by state health departments. I've been a volunteer with the project as well, and generally I've been working on data quality issues. These can issues such as a reported cumulative case count dropping in a county, or instances where county health officials report case and death counts later than the state.
 
-When a state reports its numbers for a day, generally those counts are only of confirmed cases/deaths that have been reported to the state by some time that morning. Due to this, some states will report a higher case and death count as of a given day higher at a later point in time as opposed to what they initially reported on that date. An example of a state that does this is Indiana, whose [dashboard](https://www.coronavirus.in.gov/) is arguably one of the better ones out there at the state level, an allows you to see new and cumulative case and death counts on each day at the county level. Their [Data Hub](https://hub.mph.in.gov/dataset?q=COVID) also has a csv file you can use to regenerate the cumulative-case-for-a-county-on-a-given-day number, but unfortunatly the only data for cumulative deaths to my knowledge is the current day's value. This data has to exist somewhere though, since in the dashboard we can filter by county and see the cumulative death count for each day:
+When a state reports its numbers for a day, generally those counts are only of confirmed cases/deaths that have been reported to the state by some time that morning. Due to this, some states will report a higher case and death count as of a given day higher at a later point in time as opposed to what they initially reported on that date. An example of a state that does this is Indiana, whose [dashboard](https://www.coronavirus.in.gov/) is arguably one of the better ones out there at the state level, an allows you to see new and cumulative case and death counts on each day at the county level. Their [Data Hub](https://hub.mph.in.gov/dataset?q=COVID) also has a csv file you can use to regenerate the cumulative-case-for-a-county-on-a-given-day number, but unfortunately the only data for cumulative deaths to my knowledge is the current day's value. This data has to exist somewhere though, since in the dashboard we can filter by county and see the cumulative death count for each day:
 
 ![lake county cumulative death count](/post/2020-04-25-parsing-covid-19-data-from-json_files/lake_county.png)
 
-I figured this was probably sent to the dashboard through something like json, so I decided to see if I could find anything by looking at the site's source. The first thing that I noticed was that the dashboard itself is on a different webpage, https://www.coronavirus.in.gov/map/test.htm. With this open, I turned on `Developer Tools`, refreshed the page, and saw this in the `Network` tab:
+I figured this was probably sent to the dashboard through something like JSON, so I decided to see if I could find anything by looking at the site's source. The first thing that I noticed was that the dashboard itself is on a different webpage, https://www.coronavirus.in.gov/map/test.htm. With this open, I turned on `Developer Tools`, refreshed the page, and saw this in the `Network` tab:
 
 ![](/post/2020-04-25-parsing-covid-19-data-from-json_files/json_link.png)
 
@@ -103,7 +103,7 @@ typeof(json_data$objects$cb_2015_indiana_county_20m$geometries$properties$COVID_
 json_data$objects$cb_2015_indiana_county_20m$geometries$properties$COVID_COUNT
 ```
 
-Now, since I was in RStudio it was easy for me to see that in additon to vectors, `json_data$objects$cb_2015_indiana_county_20m$geometries$properties` also had additional lists nested inside of it (*it just keeps going, and going, and going...*); we can see this by looking at the `typeof` output for each list element:
+Now, since I was in R Studio it was easy for me to see that in addition to vectors, `json_data$objects$cb_2015_indiana_county_20m$geometries$properties` also had additional lists nested inside of it (*it just keeps going, and going, and going...*); we can see this by looking at the `typeof` output for each list element:
 
 ```{r}
 sapply(json_data$objects$cb_2015_indiana_county_20m$geometries$properties, typeof) %>%
@@ -111,7 +111,7 @@ sapply(json_data$objects$cb_2015_indiana_county_20m$geometries$properties, typeo
 ```
 
 
-The first list that grabs my immediate attention is `daily_statistics`, but like before a few levels up, this is only a dataframe with the current day's counts, but now at the county level:
+The first list that grabs my immediate attention is `daily_statistics`, but like before a few levels up, this is only a data frame with the current day's counts, but now at the county level:
 
 ```{r}
 json_data$objects$cb_2015_indiana_county_20m$geometries$properties$DAILY_STATISTICS %>%
@@ -158,7 +158,7 @@ df <- bind_rows(results) %>%
          Deaths = COVID_DEATHS_CUMSUM)
 ```
 
-So now I can look back at past dates and see, as of now, how many cases and deaths is Indiana reporting to have occured on that day. For example, if I wanted to check the numbers for Lake County on 4/16, I could look up the value in the table:
+So now I can look back at past dates and see, as of now, how many cases and deaths is Indiana reporting to have occurred on that day. For example, if I wanted to check the numbers for Lake County on 4/16, I could look up the value in the table:
 
 ```{r}
 df %>%

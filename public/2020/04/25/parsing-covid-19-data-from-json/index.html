@@ -19,7 +19,7 @@
 
 
 <meta property="og:title" content="Parsing Indiana&#39;s COVID-19 Data from JSON" />
-<meta property="og:description" content="There’s been a lot of interest recently in tracking the number of COVID-19 cases in the US, whether at the national, state, or more local level. Groups including the New York Times and 1point3acres have put together publicly available data sets, which appear to be largely based on numbers reported by state health departments. Another effort to collect this data through crowdsourcing the data acquistion is organized by Broadstreet, where volunteers collect daily numbers reported by state health departments. I’ve been a volunteer with the project as well, and generally I’ve been working on data quality issues." />
+<meta property="og:description" content="There’s been a lot of interest recently in tracking the number of COVID-19 cases in the US, whether at the national, state, or more local level. Groups including the New York Times and 1point3acres have put together publicly available data sets, which appear to be largely based on numbers reported by state health departments. Another effort to collect this data through crowd-sourcing the data acquisition is organized by Broadstreet, where volunteers collect daily numbers reported by state health departments. I’ve been a volunteer with the project as well, and generally I’ve been working on data quality issues." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="/2020/04/25/parsing-covid-19-data-from-json/" />
 <meta property="og:image" content="/img/og.png"/>
@@ -30,7 +30,7 @@
 <meta name="twitter:image" content="/img/og.png"/>
 
 <meta name="twitter:title" content="Parsing Indiana&#39;s COVID-19 Data from JSON"/>
-<meta name="twitter:description" content="There’s been a lot of interest recently in tracking the number of COVID-19 cases in the US, whether at the national, state, or more local level. Groups including the New York Times and 1point3acres have put together publicly available data sets, which appear to be largely based on numbers reported by state health departments. Another effort to collect this data through crowdsourcing the data acquistion is organized by Broadstreet, where volunteers collect daily numbers reported by state health departments. I’ve been a volunteer with the project as well, and generally I’ve been working on data quality issues."/>
+<meta name="twitter:description" content="There’s been a lot of interest recently in tracking the number of COVID-19 cases in the US, whether at the national, state, or more local level. Groups including the New York Times and 1point3acres have put together publicly available data sets, which appear to be largely based on numbers reported by state health departments. Another effort to collect this data through crowd-sourcing the data acquisition is organized by Broadstreet, where volunteers collect daily numbers reported by state health departments. I’ve been a volunteer with the project as well, and generally I’ve been working on data quality issues."/>
 
 
 
@@ -106,13 +106,13 @@
 <script src="/rmarkdown-libs/crosstalk/js/crosstalk.min.js"></script>
 
 
-<p>There’s been a lot of interest recently in tracking the number of COVID-19 cases in the US, whether at the national, state, or more local level. Groups including the <a href="https://github.com/nytimes/covid-19-data">New York Times</a> and <a href="https://coronavirus.1point3acres.com/en">1point3acres</a> have put together publicly available data sets, which appear to be largely based on numbers reported by state health departments. Another effort to collect this data through crowdsourcing the data acquistion is organized by <a href="https://covid19dataproject.org/">Broadstreet</a>, where volunteers collect daily numbers reported by state health departments. I’ve been a volunteer with the project as well, and generally I’ve been working on data quality issues. These can issues such as a reported cumulative case count dropping in a county, or instances where county health officials report case and death counts later than the state.</p>
-<p>When a state reports its numbers for a day, generally those counts are only of confirmed cases/deaths that have been reported to the state by some time that morning. Due to this, some states will report a higher case and death count as of a given day higher at a later point in time as opposed to what they initially reported on that date. An example of a state that does this is Indiana, whose <a href="https://www.coronavirus.in.gov/">dashboard</a> is arguably one of the better ones out there at the state level, an allows you to see new and cumulative case and death counts on each day at the county level. Their <a href="https://hub.mph.in.gov/dataset?q=COVID">Data Hub</a> also has a csv file you can use to regenerate the cumulative-case-for-a-county-on-a-given-day number, but unfortunatly the only data for cumulative deaths to my knowledge is the current day’s value. This data has to exist somewhere though, since in the dashboard we can filter by county and see the cumulative death count for each day:</p>
+<p>There’s been a lot of interest recently in tracking the number of COVID-19 cases in the US, whether at the national, state, or more local level. Groups including the <a href="https://github.com/nytimes/covid-19-data">New York Times</a> and <a href="https://coronavirus.1point3acres.com/en">1point3acres</a> have put together publicly available data sets, which appear to be largely based on numbers reported by state health departments. Another effort to collect this data through crowd-sourcing the data acquisition is organized by <a href="https://covid19dataproject.org/">Broadstreet</a>, where volunteers collect daily numbers reported by state health departments. I’ve been a volunteer with the project as well, and generally I’ve been working on data quality issues. These can issues such as a reported cumulative case count dropping in a county, or instances where county health officials report case and death counts later than the state.</p>
+<p>When a state reports its numbers for a day, generally those counts are only of confirmed cases/deaths that have been reported to the state by some time that morning. Due to this, some states will report a higher case and death count as of a given day higher at a later point in time as opposed to what they initially reported on that date. An example of a state that does this is Indiana, whose <a href="https://www.coronavirus.in.gov/">dashboard</a> is arguably one of the better ones out there at the state level, an allows you to see new and cumulative case and death counts on each day at the county level. Their <a href="https://hub.mph.in.gov/dataset?q=COVID">Data Hub</a> also has a csv file you can use to regenerate the cumulative-case-for-a-county-on-a-given-day number, but unfortunately the only data for cumulative deaths to my knowledge is the current day’s value. This data has to exist somewhere though, since in the dashboard we can filter by county and see the cumulative death count for each day:</p>
 <div class="figure">
 <img src="/post/2020-04-25-parsing-covid-19-data-from-json_files/lake_county.png" alt="" />
 <p class="caption">lake county cumulative death count</p>
 </div>
-<p>I figured this was probably sent to the dashboard through something like json, so I decided to see if I could find anything by looking at the site’s source. The first thing that I noticed was that the dashboard itself is on a different webpage, <a href="https://www.coronavirus.in.gov/map/test.htm" class="uri">https://www.coronavirus.in.gov/map/test.htm</a>. With this open, I turned on <code>Developer Tools</code>, refreshed the page, and saw this in the <code>Network</code> tab:</p>
+<p>I figured this was probably sent to the dashboard through something like JSON, so I decided to see if I could find anything by looking at the site’s source. The first thing that I noticed was that the dashboard itself is on a different webpage, <a href="https://www.coronavirus.in.gov/map/test.htm" class="uri">https://www.coronavirus.in.gov/map/test.htm</a>. With this open, I turned on <code>Developer Tools</code>, refreshed the page, and saw this in the <code>Network</code> tab:</p>
 <p><img src="/post/2020-04-25-parsing-covid-19-data-from-json_files/json_link.png" /></p>
 <p>It was clear upon loading that link that the <code>.topojson</code> was the file that I needed. Along with all the information needed to draw the maps in the dashboard, this file also contained all the cumulative case and death counts needed to draw those figures at the county level as well. So my next step was to somehow get this all into R, which is not something I had ever done before. After a quick search, I decided to use the <code>jsonlite</code> package; its <code>fromJSON</code> is able to map the JSON data into R objects, which in this case yielded a hierarchy of lists leading down to both <code>data.frames</code> and vectors.</p>
 <div id="working-with-the-data-in-r" class="section level2">
@@ -229,7 +229,7 @@ library(DT)</code></pre>
 ## [61]  194   32   16  210  115  198   57  108  223   12  120   18    9  133   12
 ## [76]   14    5    7   17    9   21  176   22  163   84   40   30    6    1  144
 ## [91]  553   16</code></pre>
-<p>Now, since I was in RStudio it was easy for me to see that in additon to vectors, <code>json_data$objects$cb_2015_indiana_county_20m$geometries$properties</code> also had additional lists nested inside of it (<em>it just keeps going, and going, and going…</em>); we can see this by looking at the <code>typeof</code> output for each list element:</p>
+<p>Now, since I was in R Studio it was easy for me to see that in addition to vectors, <code>json_data$objects$cb_2015_indiana_county_20m$geometries$properties</code> also had additional lists nested inside of it (<em>it just keeps going, and going, and going…</em>); we can see this by looking at the <code>typeof</code> output for each list element:</p>
 <pre class="r"><code>sapply(json_data$objects$cb_2015_indiana_county_20m$geometries$properties, typeof) %&gt;%
   data.frame %&gt;% rename(Type = 1) %&gt;% knitr::kable()</code></pre>
 <table>
@@ -334,7 +334,7 @@ library(DT)</code></pre>
 </tr>
 </tbody>
 </table>
-<p>The first list that grabs my immediate attention is <code>daily_statistics</code>, but like before a few levels up, this is only a dataframe with the current day’s counts, but now at the county level:</p>
+<p>The first list that grabs my immediate attention is <code>daily_statistics</code>, but like before a few levels up, this is only a data frame with the current day’s counts, but now at the county level:</p>
 <pre class="r"><code>json_data$objects$cb_2015_indiana_county_20m$geometries$properties$DAILY_STATISTICS %&gt;%
   dim</code></pre>
 <pre><code>## [1] 92 12</code></pre>
@@ -642,7 +642,7 @@ df &lt;- bind_rows(results) %&gt;%
          Date = DATE,
          Cases = COVID_COUNT_CUMSUM,
          Deaths = COVID_DEATHS_CUMSUM)</code></pre>
-<p>So now I can look back at past dates and see, as of now, how many cases and deaths is Indiana reporting to have occured on that day. For example, if I wanted to check the numbers for Lake County on 4/16, I could look up the value in the table:</p>
+<p>So now I can look back at past dates and see, as of now, how many cases and deaths is Indiana reporting to have occurred on that day. For example, if I wanted to check the numbers for Lake County on 4/16, I could look up the value in the table:</p>
 <pre class="r"><code>df %&gt;%
   filter(Date == as.Date(&quot;2020-04-16&quot;) &amp; County == &quot;MARION&quot;) %&gt;%
   knitr::kable()</code></pre>
