@@ -18,7 +18,7 @@ paginate = 10
 
 [params]
   author = "Andy Beck" # You can also set author in post front matter individually
-  subTitle = "Musings on life, statistics, genetics, etc"
+  subTitle = "All the thoughts that are fit to blog (and then some)"
 
   # Open Graph & Twitter Card variables
   # You can also set description and images in post front matter individually

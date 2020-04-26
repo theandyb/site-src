@@ -1,0 +1,178 @@
+---
+title: Parsing Indiana's COVID-19 Data from JSON
+author: Andy Beck
+date: '2020-04-25'
+slug: parsing-covid-19-data-from-json
+categories:
+  - r
+tags:
+  - COVID-19
+  - web scraping
+description: ''
+noLicense: no
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(jsonlite)
+```
+
+There's been a lot of interest recently in tracking the number of COVID-19 cases in the US, whether at the national, state, or more local level. Groups including the [New York Times](https://github.com/nytimes/covid-19-data) and [1point3acres](https://coronavirus.1point3acres.com/en) have put together publicly available data sets, which appear to be largely based on numbers reported by state health departments. Another effort to collect this data through crowdsourcing the data acquistion is organized by [Broadstreet](https://covid19dataproject.org/), where volunteers collect daily numbers reported by state health departments. I've been a volunteer with the project as well, and generally I've been working on data quality issues. These can issues such as a reported cumulative case count dropping in a county, or instances where county health officials report case and death counts later than the state.
+
+When a state reports its numbers for a day, generally those counts are only of confirmed cases/deaths that have been reported to the state by some time that morning. Due to this, some states will report a higher case and death count as of a given day higher at a later point in time as opposed to what they initially reported on that date. An example of a state that does this is Indiana, whose [dashboard](https://www.coronavirus.in.gov/) is arguably one of the better ones out there at the state level, an allows you to see new and cumulative case and death counts on each day at the county level. Their [Data Hub](https://hub.mph.in.gov/dataset?q=COVID) also has a csv file you can use to regenerate the cumulative-case-for-a-county-on-a-given-day number, but unfortunatly the only data for cumulative deaths to my knowledge is the current day's value. This data has to exist somewhere though, since in the dashboard we can filter by county and see the cumulative death count for each day:
+
+![lake county cumulative death count](/post/2020-04-25-parsing-covid-19-data-from-json_files/lake_county.png)
+
+I figured this was probably sent to the dashboard through something like json, so I decided to see if I could find anything by looking at the site's source. The first thing that I noticed was that the dashboard itself is on a different webpage, https://www.coronavirus.in.gov/map/test.htm. With this open, I turned on `Developer Tools`, refreshed the page, and saw this in the `Network` tab:
+
+![](/post/2020-04-25-parsing-covid-19-data-from-json_files/json_link.png)
+
+It was clear upon loading that link that the `.topojson` was the file that I needed. Along with all the information needed to draw the maps in the dashboard, this file also contained all the cumulative case and death counts needed to draw those figures at the county level as well. So my next step was to somehow get this all into R, which is not something I had ever done before. After a quick search, I decided to use the `jsonlite` package; its `fromJSON` is able to map the JSON data into R objects, which in this case yielded a hierarchy of lists leading down to both `data.frames` and vectors.
+
+## Working with the data in R
+
+### Packages Used
+
+* tidyverse
+* jsonlite
+* knitr (only used for table output in this document)
+* DT (used for table output in Appendix)
+
+```{r eval=FALSE, include=TRUE}
+library(tidyverse)
+library(knitr)
+library(jsonlite)
+library(DT)
+```
+
+Starting from the top, to load the data you can run
+```{r}
+json_data <- jsonlite::fromJSON(
+  "https://www.coronavirus.in.gov/map/covid-19-indiana-daily-report-current.topojson")
+```
+
+This produces a list, where at the top of the hierarchy are 4 items:
+
+```{r}
+names(json_data)
+```
+
+`type` is simply a string ("Topology"), whereas the other three are also lists. Both `transform` and `arcs` look to be used for drawing the map on the dashboard, so we'll focus on the `objects` list. Inside this list are, of course, even more lists!:
+
+```{r}
+names(json_data$objects)
+```
+
+At first glance, `daily_statistics` looks to be promising, and is also a list itself:
+
+```{r}
+typeof(json_data$objects$daily_statistics)
+```
+
+Maybe this is where we can find the county-level cumulative counts for each day? As it turns out, this is not the case; there are only 17 items in the list, and they are in fact only the current numbers for the state as a whole:
+
+```{r}
+json_data$objects$daily_statistics
+```
+
+![indiana counts as of 4/25](/post/2020-04-25-parsing-covid-19-data-from-json_files/indiana_total.png)
+
+Well, we've learned where these numbers come from; now back to the task at hand. Looking back at the other objects inside `json_data$objects`, the other name that sticks out is `cb_2015_indiana_county_20m`; looking inside this, we see that it too is a list (are we playing with Russian nesting dolls?) with the following items inside:
+
+```{r}
+names(json_data$objects$cb_2015_indiana_county_20m)
+```
+
+Here `type` is just a string ("GeometryCollection"), and `geometries` doesn't seem too promising, but it's worth taking a look inside:
+
+```{r}
+names(json_data$objects$cb_2015_indiana_county_20m$geometries)
+```
+
+Here, `type` is a vector of strings (all "Polygon"); but on a positive note, it is 92 elements long, which is the number of counties in Indiana. This leaves us with `arcs` and `properties`, and of the two `properties` seems more promising:
+
+```{r}
+names(json_data$objects$cb_2015_indiana_county_20m$geometries$properties)
+```
+
+A few of these names jump out immediately to me, including `COVID_COUNT` and `COVID_DEATHS`; inspecting these further, we find that these are the county-level counts for the current day:
+
+```{r}
+typeof(json_data$objects$cb_2015_indiana_county_20m$geometries$properties$COVID_COUNT)
+json_data$objects$cb_2015_indiana_county_20m$geometries$properties$COVID_COUNT
+```
+
+Now, since I was in RStudio it was easy for me to see that in additon to vectors, `json_data$objects$cb_2015_indiana_county_20m$geometries$properties` also had additional lists nested inside of it (*it just keeps going, and going, and going...*); we can see this by looking at the `typeof` output for each list element:
+
+```{r}
+sapply(json_data$objects$cb_2015_indiana_county_20m$geometries$properties, typeof) %>%
+  data.frame %>% rename(Type = 1) %>% knitr::kable()
+```
+
+
+The first list that grabs my immediate attention is `daily_statistics`, but like before a few levels up, this is only a dataframe with the current day's counts, but now at the county level:
+
+```{r}
+json_data$objects$cb_2015_indiana_county_20m$geometries$properties$DAILY_STATISTICS %>%
+  dim
+json_data$objects$cb_2015_indiana_county_20m$geometries$properties$DAILY_STATISTICS %>%
+  head %>% knitr::kable()
+```
+
+The other lists look to be for data used in the county-level visualizations, and since the numbers we're looking for are parts of these visuals it makes sense to dig down into these; in particular, `VIZ_DATE` sounds useful, so let's look there:
+
+```{r}
+names(json_data$objects$cb_2015_indiana_county_20m$geometries$properties$VIZ_DATE)
+```
+
+Huh, none of the elements are named. How many are there?
+
+```{r}
+length(json_data$objects$cb_2015_indiana_county_20m$geometries$properties$VIZ_DATE)
+```
+
+A-ha, 92! One per county! And as it turns out, each of these elements are also *technically* lists (*go figure*), but can be more accurately described as `data.frame`s:
+
+```{r}
+json_data$objects$cb_2015_indiana_county_20m$geometries$properties$VIZ_DATE[[1]] %>%
+  filter(DATE > as.Date("2020-03-31")) %>%
+  head %>% knitr::kable()
+```
+
+Each of these `data.frame`s contains exactly what I was searching for, and putting these together into one easy-to-use table is trivial:
+
+```{r}
+VIZ_DATE <- json_data$objects$cb_2015_indiana_county_20m[[2]]$properties$VIZ_DATE
+results <- vector(mode = "list", length = 92) # 92 counties in Indiana
+
+for(i in 1:length(VIZ_DATE)){
+  results[[i]] <- VIZ_DATE[[i]] %>%
+    select(COUNTY_NAME, DATE, COVID_COUNT_CUMSUM, COVID_DEATHS_CUMSUM)
+}
+
+df <- bind_rows(results) %>%
+  rename(County = COUNTY_NAME, 
+         Date = DATE,
+         Cases = COVID_COUNT_CUMSUM,
+         Deaths = COVID_DEATHS_CUMSUM)
+```
+
+So now I can look back at past dates and see, as of now, how many cases and deaths is Indiana reporting to have occured on that day. For example, if I wanted to check the numbers for Lake County on 4/16, I could look up the value in the table:
+
+```{r}
+df %>%
+  filter(Date == as.Date("2020-04-16") & County == "MARION") %>%
+  knitr::kable()
+```
+
+So far Indiana is the only state where I've taken a dive into their Dashboard's JSON. This might be possible to do for other states who report cumulative county-level counts as of each date (my next target is Ohio, who also updates previous day's numbers as time goes on). There's also other useful information in this JSON that might be fun to play with as well (even recreating figures in Indiana's dashboard might be a fun project).
+
+## Appendix: the full table
+
+```{r}
+df %>%
+  arrange(Date, County) %>%
+  DT::datatable(filter = 'top', options = list(pageLength = 92))
+```
+
