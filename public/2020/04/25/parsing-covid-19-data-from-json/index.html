@@ -108,10 +108,7 @@
 
 <p>There’s been a lot of interest recently in tracking the number of COVID-19 cases in the US, whether at the national, state, or more local level. Groups including the <a href="https://github.com/nytimes/covid-19-data">New York Times</a> and <a href="https://coronavirus.1point3acres.com/en">1point3acres</a> have put together publicly available data sets, which appear to be largely based on numbers reported by state health departments. Another effort to collect this data through crowd-sourcing the data acquisition is organized by <a href="https://covid19dataproject.org/">Broadstreet</a>, where volunteers collect daily numbers reported by state health departments. I’ve been a volunteer with the project as well, and generally I’ve been working on data quality issues. These can issues such as a reported cumulative case count dropping in a county, or instances where county health officials report case and death counts later than the state.</p>
 <p>When a state reports its numbers for a day, generally those counts are only of confirmed cases/deaths that have been reported to the state by some time that morning. Due to this, some states will report a higher case and death count as of a given day higher at a later point in time as opposed to what they initially reported on that date. An example of a state that does this is Indiana, whose <a href="https://www.coronavirus.in.gov/">dashboard</a> is arguably one of the better ones out there at the state level, an allows you to see new and cumulative case and death counts on each day at the county level. Their <a href="https://hub.mph.in.gov/dataset?q=COVID">Data Hub</a> also has a csv file you can use to regenerate the cumulative-case-for-a-county-on-a-given-day number, but unfortunately the only data for cumulative deaths to my knowledge is the current day’s value. This data has to exist somewhere though, since in the dashboard we can filter by county and see the cumulative death count for each day:</p>
-<div class="figure">
-<img src="/post/2020-04-25-parsing-covid-19-data-from-json_files/lake_county.png" alt="" />
-<p class="caption">lake county cumulative death count</p>
-</div>
+<p><img src="/post/2020-04-25-parsing-covid-19-data-from-json_files/lake_county.png" /></p>
 <p>I figured this was probably sent to the dashboard through something like JSON, so I decided to see if I could find anything by looking at the site’s source. The first thing that I noticed was that the dashboard itself is on a different webpage, <a href="https://www.coronavirus.in.gov/map/test.htm" class="uri">https://www.coronavirus.in.gov/map/test.htm</a>. With this open, I turned on <code>Developer Tools</code>, refreshed the page, and saw this in the <code>Network</code> tab:</p>
 <p><img src="/post/2020-04-25-parsing-covid-19-data-from-json_files/json_link.png" /></p>
 <p>It was clear upon loading that link that the <code>.topojson</code> was the file that I needed. Along with all the information needed to draw the maps in the dashboard, this file also contained all the cumulative case and death counts needed to draw those figures at the county level as well. So my next step was to somehow get this all into R, which is not something I had ever done before. After a quick search, I decided to use the <code>jsonlite</code> package; its <code>fromJSON</code> is able to map the JSON data into R objects, which in this case yielded a hierarchy of lists leading down to both <code>data.frames</code> and vectors.</p>
@@ -198,10 +195,7 @@ library(DT)</code></pre>
 ## 
 ## $new_death_end_date
 ## [1] &quot;2020-04-24&quot;</code></pre>
-<div class="figure">
-<img src="/post/2020-04-25-parsing-covid-19-data-from-json_files/indiana_total.png" alt="" />
-<p class="caption">indiana counts as of 4/25</p>
-</div>
+<p><img src="/post/2020-04-25-parsing-covid-19-data-from-json_files/indiana_total.png" /></p>
 <p>Well, we’ve learned where these numbers come from; now back to the task at hand. Looking back at the other objects inside <code>json_data$objects</code>, the other name that sticks out is <code>cb_2015_indiana_county_20m</code>; looking inside this, we see that it too is a list (are we playing with Russian nesting dolls?) with the following items inside:</p>
 <pre class="r"><code>names(json_data$objects$cb_2015_indiana_county_20m)</code></pre>
 <pre><code>## [1] &quot;type&quot;       &quot;geometries&quot;</code></pre>

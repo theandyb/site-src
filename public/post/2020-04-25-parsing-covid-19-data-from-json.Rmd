@@ -22,7 +22,7 @@ There's been a lot of interest recently in tracking the number of COVID-19 cases
 
 When a state reports its numbers for a day, generally those counts are only of confirmed cases/deaths that have been reported to the state by some time that morning. Due to this, some states will report a higher case and death count as of a given day higher at a later point in time as opposed to what they initially reported on that date. An example of a state that does this is Indiana, whose [dashboard](https://www.coronavirus.in.gov/) is arguably one of the better ones out there at the state level, an allows you to see new and cumulative case and death counts on each day at the county level. Their [Data Hub](https://hub.mph.in.gov/dataset?q=COVID) also has a csv file you can use to regenerate the cumulative-case-for-a-county-on-a-given-day number, but unfortunately the only data for cumulative deaths to my knowledge is the current day's value. This data has to exist somewhere though, since in the dashboard we can filter by county and see the cumulative death count for each day:
 
-![lake county cumulative death count](/post/2020-04-25-parsing-covid-19-data-from-json_files/lake_county.png)
+![](/post/2020-04-25-parsing-covid-19-data-from-json_files/lake_county.png)
 
 I figured this was probably sent to the dashboard through something like JSON, so I decided to see if I could find anything by looking at the site's source. The first thing that I noticed was that the dashboard itself is on a different webpage, https://www.coronavirus.in.gov/map/test.htm. With this open, I turned on `Developer Tools`, refreshed the page, and saw this in the `Network` tab:
 
@@ -76,7 +76,7 @@ Maybe this is where we can find the county-level cumulative counts for each day?
 json_data$objects$daily_statistics
 ```
 
-![indiana counts as of 4/25](/post/2020-04-25-parsing-covid-19-data-from-json_files/indiana_total.png)
+![](/post/2020-04-25-parsing-covid-19-data-from-json_files/indiana_total.png)
 
 Well, we've learned where these numbers come from; now back to the task at hand. Looking back at the other objects inside `json_data$objects`, the other name that sticks out is `cb_2015_indiana_county_20m`; looking inside this, we see that it too is a list (are we playing with Russian nesting dolls?) with the following items inside:
 
