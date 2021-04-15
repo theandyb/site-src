@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Website of Andy Beck</title>
+    <link>https://andytbeck.com/</link>
+    <description>Recent content on Website of Andy Beck</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Wed, 14 Apr 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://andytbeck.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>About</title>
+      <link>https://andytbeck.com/about/</link>
+      <pubDate>Wed, 14 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://andytbeck.com/about/</guid>
+      <description>Andy Beck is a PhD candidate in the Department of Biostatistics at the University of Michigan.</description>
+    </item>
+    
+    <item>
+      <title>Placeholder</title>
+      <link>https://andytbeck.com/post/2021-04-14-placeholder/</link>
+      <pubDate>Wed, 14 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://andytbeck.com/post/2021-04-14-placeholder/</guid>
+      <description>This blog/portfolio/etc is a work in progress.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://andytbeck.com/archives/</link>
+      <pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://andytbeck.com/archives/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Contact</title>
+      <link>https://andytbeck.com/contact/</link>
+      <pubDate>Fri, 08 Mar 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://andytbeck.com/contact/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>
